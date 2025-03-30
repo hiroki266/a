@@ -14,21 +14,55 @@
                 <label for="salary">給与収入:</label>
                 <input type="number" id="salary" name="salary" min="0">
             </div>
-            <div class="form-group">
-                <label for="business-income">事業収入:</label>
-                <input type="number" id="business-income" name="business-income" min="0">
+
+            <div class="income-section">
+                <h3>事業所得</h3>
+                <div class="form-group">
+                    <label for="business-income">事業収入:</label>
+                    <input type="number" id="business-income" name="business-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="business-expenses">事業必要経費:</label>
+                    <input type="number" id="business-expenses" name="business-expenses" min="0">
+                </div>
+                <div class="income-result">
+                    <p>事業所得: <span id="business-profit">0</span>円</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="real-estate-income">不動産収入:</label>
-                <input type="number" id="real-estate-income" name="real-estate-income" min="0">
+
+            <div class="income-section">
+                <h3>不動産所得</h3>
+                <div class="form-group">
+                    <label for="real-estate-income">不動産収入:</label>
+                    <input type="number" id="real-estate-income" name="real-estate-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="real-estate-expenses">不動産必要経費:</label>
+                    <input type="number" id="real-estate-expenses" name="real-estate-expenses" min="0">
+                </div>
+                <div class="income-result">
+                    <p>不動産所得: <span id="real-estate-profit">0</span>円</p>
+                </div>
             </div>
+
+            <div class="income-section">
+                <h3>雑所得</h3>
+                <div class="form-group">
+                    <label for="misc-income">雑収入:</label>
+                    <input type="number" id="misc-income" name="misc-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="misc-expenses">雑所得必要経費:</label>
+                    <input type="number" id="misc-expenses" name="misc-expenses" min="0">
+                </div>
+                <div class="income-result">
+                    <p>雑所得: <span id="misc-profit">0</span>円</p>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="dividend-income">配当収入:</label>
                 <input type="number" id="dividend-income" name="dividend-income" min="0">
-            </div>
-            <div class="form-group">
-                <label for="misc-income">雑収入:</label>
-                <input type="number" id="misc-income" name="misc-income" min="0">
             </div>
             <div class="form-group">
                 <label for="transfer-income">譲渡収入:</label>
@@ -54,9 +88,31 @@
                 <label for="small-business">小規模企業共済等掛金控除:</label>
                 <input type="number" id="small-business" name="small-business" min="0">
             </div>
-            <div class="form-group">
-                <label for="life-insurance">生命保険料控除:</label>
-                <input type="number" id="life-insurance" name="life-insurance" min="0">
+            <div class="insurance-section">
+                <h3>生命保険料控除</h3>
+                <div class="form-group">
+                    <label for="new-life-insurance">新一般生命保険料:</label>
+                    <input type="number" id="new-life-insurance" name="new-life-insurance" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="old-life-insurance">旧一般生命保険料:</label>
+                    <input type="number" id="old-life-insurance" name="old-life-insurance" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="new-pension-insurance">新個人年金保険料:</label>
+                    <input type="number" id="new-pension-insurance" name="new-pension-insurance" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="old-pension-insurance">旧個人年金保険料:</label>
+                    <input type="number" id="old-pension-insurance" name="old-pension-insurance" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="nursing-insurance">介護医療保険料:</label>
+                    <input type="number" id="nursing-insurance" name="nursing-insurance" min="0">
+                </div>
+                <div class="insurance-result">
+                    <p>生命保険料控除額: <span id="life-insurance-total">0</span>円</p>
+                </div>
             </div>
             <div class="form-group">
                 <label for="earthquake-insurance">地震保険料控除:</label>
