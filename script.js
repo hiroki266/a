@@ -1,17 +1,28 @@
 function calculateTax() {
     // 収入の取得
     const salary = Number(document.getElementById('salary').value) || 0;
-    const otherIncome = Number(document.getElementById('other-income').value) || 0;
+    
+    // その他の収入の取得
+    const businessIncome = Number(document.getElementById('business-income').value) || 0;
+    const realEstateIncome = Number(document.getElementById('real-estate-income').value) || 0;
+    const dividendIncome = Number(document.getElementById('dividend-income').value) || 0;
+    const miscIncome = Number(document.getElementById('misc-income').value) || 0;
+    const transferIncome = Number(document.getElementById('transfer-income').value) || 0;
+    const temporaryIncome = Number(document.getElementById('temporary-income').value) || 0;
 
     // 給与所得の計算
     const employmentIncome = calculateEmploymentIncome(salary);
+
+    // その他の収入の合計
+    const otherIncome = businessIncome + realEstateIncome + dividendIncome + 
+                       miscIncome + transferIncome + temporaryIncome;
 
     // 控除の取得
     const basicDeduction = 480000; // 基礎控除
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
     const lifeInsurance = Number(document.getElementById('life-insurance').value) || 0;
 
-    // 総所得金額の計算（給与所得 + その他の収入）
+    // 総所得金額の計算
     const totalIncome = employmentIncome + otherIncome;
 
     // 控除総額の計算
@@ -29,9 +40,15 @@ function calculateTax() {
     // 合計税額
     const totalTax = incomeTax + specialTax;
 
-    // 結果の表示
+    // 結果の表示を更新
     document.getElementById('total-salary').textContent = salary.toLocaleString();
     document.getElementById('employment-income').textContent = employmentIncome.toLocaleString();
+    document.getElementById('business-income-display').textContent = businessIncome.toLocaleString();
+    document.getElementById('real-estate-income-display').textContent = realEstateIncome.toLocaleString();
+    document.getElementById('dividend-income-display').textContent = dividendIncome.toLocaleString();
+    document.getElementById('misc-income-display').textContent = miscIncome.toLocaleString();
+    document.getElementById('transfer-income-display').textContent = transferIncome.toLocaleString();
+    document.getElementById('temporary-income-display').textContent = temporaryIncome.toLocaleString();
     document.getElementById('total-income').textContent = totalIncome.toLocaleString();
     document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
     document.getElementById('taxable-income').textContent = taxableIncome.toLocaleString();

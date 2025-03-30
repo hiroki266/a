@@ -14,9 +14,33 @@
                 <label for="salary">給与収入:</label>
                 <input type="number" id="salary" name="salary" min="0">
             </div>
-            <div class="form-group">
-                <label for="other-income">その他の収入:</label>
-                <input type="number" id="other-income" name="other-income" min="0">
+            
+            <div class="income-section">
+                <h3>その他の収入</h3>
+                <div class="form-group">
+                    <label for="business-income">事業収入:</label>
+                    <input type="number" id="business-income" name="business-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="real-estate-income">不動産収入:</label>
+                    <input type="number" id="real-estate-income" name="real-estate-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="dividend-income">配当収入:</label>
+                    <input type="number" id="dividend-income" name="dividend-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="misc-income">雑収入:</label>
+                    <input type="number" id="misc-income" name="misc-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="transfer-income">譲渡収入:</label>
+                    <input type="number" id="transfer-income" name="transfer-income" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="temporary-income">一時収入:</label>
+                    <input type="number" id="temporary-income" name="temporary-income" min="0">
+                </div>
             </div>
 
             <h2>控除</h2>
@@ -40,6 +64,16 @@
             <h2>計算結果</h2>
             <p>給与収入: <span id="total-salary">0</span>円</p>
             <p>給与所得控除後の給与所得: <span id="employment-income">0</span>円</p>
+            
+            <h3>その他の収入内訳</h3>
+            <p>事業収入: <span id="business-income-display">0</span>円</p>
+            <p>不動産収入: <span id="real-estate-income-display">0</span>円</p>
+            <p>配当収入: <span id="dividend-income-display">0</span>円</p>
+            <p>雑収入: <span id="misc-income-display">0</span>円</p>
+            <p>譲渡収入: <span id="transfer-income-display">0</span>円</p>
+            <p>一時収入: <span id="temporary-income-display">0</span>円</p>
+            
+            <h3>合計</h3>
             <p>総所得金額: <span id="total-income">0</span>円</p>
             <p>控除総額: <span id="total-deduction">0</span>円</p>
             <p>課税所得金額: <span id="taxable-income">0</span>円</p>
