@@ -159,37 +159,42 @@
 
         <div id="results" class="results">
             <h2>計算結果</h2>
-            <h3>収入内訳</h3>
-            <p>給与収入: <span id="total-salary">0</span>円</p>
-            <p>給与所得控除後の給与所得: <span id="employment-income">0</span>円</p>
-            <p>事業収入: <span id="business-income-display">0</span>円</p>
-            <p>不動産収入: <span id="real-estate-income-display">0</span>円</p>
-            <p>配当収入: <span id="dividend-income-display">0</span>円</p>
-            <p>雑収入: <span id="misc-income-display">0</span>円</p>
-            <p>譲渡収入: <span id="transfer-income-display">0</span>円</p>
-            <p>一時収入: <span id="temporary-income-display">0</span>円</p>
             
+            <h3>所得内訳</h3>
+            <div class="income-breakdown">
+                <p>給与所得: <span id="employment-income">0</span>円</p>
+                <p>事業所得: <span id="business-profit">0</span>円</p>
+                <p>不動産所得: <span id="real-estate-profit">0</span>円</p>
+                <p>雑所得: <span id="misc-profit">0</span>円</p>
+                <p>配当所得: <span id="dividend-income-display">0</span>円</p>
+                <p>譲渡所得: <span id="transfer-income-display">0</span>円</p>
+                <p>一時所得: <span id="temporary-income-display">0</span>円</p>
+                <p class="total-income">総所得金額: <span id="total-income">0</span>円</p>
+            </div>
+
             <h3>控除内訳</h3>
-            <p>基礎控除: <span id="basic-deduction-display">480,000</span>円</p>
-            <p>社会保険料控除: <span id="social-insurance-display">0</span>円</p>
-            <p>小規模企業共済等掛金控除: <span id="small-business-display">0</span>円</p>
-            <p>生命保険料控除: <span id="life-insurance-display">0</span>円</p>
-            <p>地震保険料控除: <span id="earthquake-insurance-display">0</span>円</p>
-            <p>扶養控除: <span id="dependent-display">0</span>円</p>
-            <p>寡婦・ひとり親控除: <span id="widow-single-parent-display">0</span>円</p>
-            <p>勤労学生・障害者控除: <span id="student-disability-display">0</span>円</p>
-            <p>雑損控除: <span id="casualty-loss-display">0</span>円</p>
-            <p>医療費控除: <span id="medical-display">0</span>円</p>
-            <p>寄付金控除: <span id="donation-display">0</span>円</p>
-            
-            <p class="total-deduction">控除総額: <span id="total-deductions-display">0</span>円</p>
-            
-            <h3>合計</h3>
-            <p>総所得金額: <span id="total-income">0</span>円</p>
-            <p>課税所得金額: <span id="taxable-income">0</span>円</p>
-            <p>所得税額: <span id="income-tax">0</span>円</p>
-            <p>復興特別所得税額: <span id="special-tax">0</span>円</p>
-            <p>合計税額: <span id="total-tax">0</span>円</p>
+            <div class="deduction-breakdown">
+                <p>基礎控除: <span id="basic-deduction-display">480,000</span>円</p>
+                <p>社会保険料控除: <span id="social-insurance-display">0</span>円</p>
+                <p>小規模企業共済等掛金控除: <span id="small-business-display">0</span>円</p>
+                <p>生命保険料控除: <span id="life-insurance-total">0</span>円</p>
+                <p>地震保険料控除: <span id="earthquake-insurance-display">0</span>円</p>
+                <p>扶養控除: <span id="dependent-display">0</span>円</p>
+                <p>寡婦・ひとり親控除: <span id="widow-single-parent-display">0</span>円</p>
+                <p>勤労学生・障害者控除: <span id="student-disability-display">0</span>円</p>
+                <p>雑損控除: <span id="casualty-loss-display">0</span>円</p>
+                <p>医療費控除: <span id="medical-display">0</span>円</p>
+                <p>寄付金控除: <span id="donation-display">0</span>円</p>
+                <p class="total-deduction">控除総額: <span id="total-deduction">0</span>円</p>
+            </div>
+
+            <h3>課税所得と税額</h3>
+            <div class="tax-breakdown">
+                <p>課税所得金額: <span id="taxable-income">0</span>円</p>
+                <p>所得税額: <span id="income-tax">0</span>円</p>
+                <p>復興特別所得税額: <span id="special-tax">0</span>円</p>
+                <p class="total-tax">合計税額: <span id="total-tax">0</span>円</p>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>

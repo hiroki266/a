@@ -33,12 +33,15 @@ function calculateTax() {
                        temporaryIncome;
 
     // 所得の内訳を表示
-    document.getElementById('total-salary').textContent = salary.toLocaleString();
     document.getElementById('employment-income').textContent = employmentIncome.toLocaleString();
     document.getElementById('business-profit').textContent = businessProfit.toLocaleString();
     document.getElementById('real-estate-profit').textContent = realEstateProfit.toLocaleString();
     document.getElementById('misc-profit').textContent = miscProfit.toLocaleString();
-    
+    document.getElementById('dividend-income-display').textContent = dividendIncome.toLocaleString();
+    document.getElementById('transfer-income-display').textContent = transferIncome.toLocaleString();
+    document.getElementById('temporary-income-display').textContent = temporaryIncome.toLocaleString();
+    document.getElementById('total-income').textContent = totalIncome.toLocaleString();
+
     // 控除の取得
     const basicDeduction = 480000; // 基礎控除
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
@@ -78,8 +81,6 @@ function calculateTax() {
     const totalTax = incomeTax + specialTax;
 
     // 結果の表示を更新
-    document.getElementById('total-income').textContent = totalIncome.toLocaleString();
-    document.getElementById('total-deductions-display').textContent = totalDeduction.toLocaleString();
     document.getElementById('basic-deduction-display').textContent = basicDeduction.toLocaleString();
     document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
     document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
@@ -91,6 +92,7 @@ function calculateTax() {
     document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
     document.getElementById('medical-display').textContent = medical.toLocaleString();
     document.getElementById('donation-display').textContent = donation.toLocaleString();
+    document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
     document.getElementById('taxable-income').textContent = taxableIncome.toLocaleString();
     document.getElementById('income-tax').textContent = incomeTax.toLocaleString();
     document.getElementById('special-tax').textContent = specialTax.toLocaleString();
