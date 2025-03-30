@@ -14,33 +14,29 @@
                 <label for="salary">給与収入:</label>
                 <input type="number" id="salary" name="salary" min="0">
             </div>
-            
-            <div class="income-section">
-                <h3>その他の収入</h3>
-                <div class="form-group">
-                    <label for="business-income">事業収入:</label>
-                    <input type="number" id="business-income" name="business-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="real-estate-income">不動産収入:</label>
-                    <input type="number" id="real-estate-income" name="real-estate-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="dividend-income">配当収入:</label>
-                    <input type="number" id="dividend-income" name="dividend-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="misc-income">雑収入:</label>
-                    <input type="number" id="misc-income" name="misc-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="transfer-income">譲渡収入:</label>
-                    <input type="number" id="transfer-income" name="transfer-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="temporary-income">一時収入:</label>
-                    <input type="number" id="temporary-income" name="temporary-income" min="0">
-                </div>
+            <div class="form-group">
+                <label for="business-income">事業収入:</label>
+                <input type="number" id="business-income" name="business-income" min="0">
+            </div>
+            <div class="form-group">
+                <label for="real-estate-income">不動産収入:</label>
+                <input type="number" id="real-estate-income" name="real-estate-income" min="0">
+            </div>
+            <div class="form-group">
+                <label for="dividend-income">配当収入:</label>
+                <input type="number" id="dividend-income" name="dividend-income" min="0">
+            </div>
+            <div class="form-group">
+                <label for="misc-income">雑収入:</label>
+                <input type="number" id="misc-income" name="misc-income" min="0">
+            </div>
+            <div class="form-group">
+                <label for="transfer-income">譲渡収入:</label>
+                <input type="number" id="transfer-income" name="transfer-income" min="0">
+            </div>
+            <div class="form-group">
+                <label for="temporary-income">一時収入:</label>
+                <input type="number" id="temporary-income" name="temporary-income" min="0">
             </div>
 
             <h2>控除</h2>
@@ -48,13 +44,58 @@
                 <label for="basic-deduction">基礎控除（48万円）:</label>
                 <input type="number" id="basic-deduction" value="480000" readonly>
             </div>
+            
+            <h3>所得控除</h3>
             <div class="form-group">
                 <label for="social-insurance">社会保険料控除:</label>
                 <input type="number" id="social-insurance" name="social-insurance" min="0">
             </div>
             <div class="form-group">
+                <label for="small-business">小規模企業共済等掛金控除:</label>
+                <input type="number" id="small-business" name="small-business" min="0">
+            </div>
+            <div class="form-group">
                 <label for="life-insurance">生命保険料控除:</label>
                 <input type="number" id="life-insurance" name="life-insurance" min="0">
+            </div>
+            <div class="form-group">
+                <label for="earthquake-insurance">地震保険料控除:</label>
+                <input type="number" id="earthquake-insurance" name="earthquake-insurance" min="0">
+            </div>
+            <div class="form-group">
+                <label for="dependent">扶養控除:</label>
+                <input type="number" id="dependent" name="dependent" min="0">
+            </div>
+            <div class="form-group">
+                <label for="widow-single-parent">寡婦・ひとり親控除:</label>
+                <select id="widow-single-parent" name="widow-single-parent">
+                    <option value="0">該当なし</option>
+                    <option value="270000">寡婦控除（27万円）</option>
+                    <option value="350000">ひとり親控除（35万円）</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="student-disability">勤労学生・障害者控除:</label>
+                <select id="student-disability" name="student-disability">
+                    <option value="0">該当なし</option>
+                    <option value="270000">勤労学生控除（27万円）</option>
+                    <option value="270000">障害者控除（27万円）</option>
+                    <option value="400000">特別障害者控除（40万円）</option>
+                </select>
+            </div>
+            
+            <h3>雑損控除・医療費控除・寄付金控除</h3>
+            <div class="form-group">
+                <label for="casualty-loss">雑損控除:</label>
+                <input type="number" id="casualty-loss" name="casualty-loss" min="0">
+            </div>
+            <div class="form-group">
+                <label for="medical">医療費控除:</label>
+                <input type="number" id="medical" name="medical" min="0">
+            </div>
+            <div class="form-group">
+                <label for="donation">寄付金控除:</label>
+                <input type="number" id="donation" name="donation" min="0">
             </div>
 
             <button type="button" onclick="calculateTax()">計算する</button>
@@ -62,10 +103,9 @@
 
         <div id="results" class="results">
             <h2>計算結果</h2>
+            <h3>収入内訳</h3>
             <p>給与収入: <span id="total-salary">0</span>円</p>
             <p>給与所得控除後の給与所得: <span id="employment-income">0</span>円</p>
-            
-            <h3>その他の収入内訳</h3>
             <p>事業収入: <span id="business-income-display">0</span>円</p>
             <p>不動産収入: <span id="real-estate-income-display">0</span>円</p>
             <p>配当収入: <span id="dividend-income-display">0</span>円</p>
@@ -73,9 +113,23 @@
             <p>譲渡収入: <span id="transfer-income-display">0</span>円</p>
             <p>一時収入: <span id="temporary-income-display">0</span>円</p>
             
+            <h3>控除内訳</h3>
+            <p>基礎控除: <span id="basic-deduction-display">480,000</span>円</p>
+            <p>社会保険料控除: <span id="social-insurance-display">0</span>円</p>
+            <p>小規模企業共済等掛金控除: <span id="small-business-display">0</span>円</p>
+            <p>生命保険料控除: <span id="life-insurance-display">0</span>円</p>
+            <p>地震保険料控除: <span id="earthquake-insurance-display">0</span>円</p>
+            <p>扶養控除: <span id="dependent-display">0</span>円</p>
+            <p>寡婦・ひとり親控除: <span id="widow-single-parent-display">0</span>円</p>
+            <p>勤労学生・障害者控除: <span id="student-disability-display">0</span>円</p>
+            <p>雑損控除: <span id="casualty-loss-display">0</span>円</p>
+            <p>医療費控除: <span id="medical-display">0</span>円</p>
+            <p>寄付金控除: <span id="donation-display">0</span>円</p>
+            
+            <p class="total-deduction">控除総額: <span id="total-deductions-display">0</span>円</p>
+            
             <h3>合計</h3>
             <p>総所得金額: <span id="total-income">0</span>円</p>
-            <p>控除総額: <span id="total-deduction">0</span>円</p>
             <p>課税所得金額: <span id="taxable-income">0</span>円</p>
             <p>所得税額: <span id="income-tax">0</span>円</p>
             <p>復興特別所得税額: <span id="special-tax">0</span>円</p>

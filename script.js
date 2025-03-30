@@ -20,13 +20,31 @@ function calculateTax() {
     // 控除の取得
     const basicDeduction = 480000; // 基礎控除
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
+    const smallBusiness = Number(document.getElementById('small-business').value) || 0;
     const lifeInsurance = Number(document.getElementById('life-insurance').value) || 0;
+    const earthquakeInsurance = Number(document.getElementById('earthquake-insurance').value) || 0;
+    const dependent = Number(document.getElementById('dependent').value) || 0;
+    const widowSingleParent = Number(document.getElementById('widow-single-parent').value) || 0;
+    const studentDisability = Number(document.getElementById('student-disability').value) || 0;
+    const casualtyLoss = Number(document.getElementById('casualty-loss').value) || 0;
+    const medical = Number(document.getElementById('medical').value) || 0;
+    const donation = Number(document.getElementById('donation').value) || 0;
 
     // 総所得金額の計算
     const totalIncome = employmentIncome + otherIncome;
 
     // 控除総額の計算
-    const totalDeduction = basicDeduction + socialInsurance + lifeInsurance;
+    const totalDeduction = basicDeduction + 
+                         socialInsurance + 
+                         smallBusiness + 
+                         lifeInsurance + 
+                         earthquakeInsurance + 
+                         dependent + 
+                         widowSingleParent + 
+                         studentDisability + 
+                         casualtyLoss + 
+                         medical + 
+                         donation;
 
     // 課税所得金額の計算
     const taxableIncome = Math.max(0, totalIncome - totalDeduction);
@@ -50,7 +68,18 @@ function calculateTax() {
     document.getElementById('transfer-income-display').textContent = transferIncome.toLocaleString();
     document.getElementById('temporary-income-display').textContent = temporaryIncome.toLocaleString();
     document.getElementById('total-income').textContent = totalIncome.toLocaleString();
-    document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
+    document.getElementById('total-deductions-display').textContent = totalDeduction.toLocaleString();
+    document.getElementById('basic-deduction-display').textContent = basicDeduction.toLocaleString();
+    document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
+    document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
+    document.getElementById('life-insurance-display').textContent = lifeInsurance.toLocaleString();
+    document.getElementById('earthquake-insurance-display').textContent = earthquakeInsurance.toLocaleString();
+    document.getElementById('dependent-display').textContent = dependent.toLocaleString();
+    document.getElementById('widow-single-parent-display').textContent = widowSingleParent.toLocaleString();
+    document.getElementById('student-disability-display').textContent = studentDisability.toLocaleString();
+    document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
+    document.getElementById('medical-display').textContent = medical.toLocaleString();
+    document.getElementById('donation-display').textContent = donation.toLocaleString();
     document.getElementById('taxable-income').textContent = taxableIncome.toLocaleString();
     document.getElementById('income-tax').textContent = incomeTax.toLocaleString();
     document.getElementById('special-tax').textContent = specialTax.toLocaleString();
