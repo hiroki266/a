@@ -452,4 +452,120 @@ function updateBasicDeductionDescription(totalIncome) {
 function calculateEarthquakeInsurance(amount) {
     // 地震保険料控除の上限は50,000円
     return Math.min(50000, amount);
-} 
+}
+
+// 入力値の検証と計算を管理するクラス
+class TaxCalculator {
+    constructor() {
+        this.initializeEventListeners();
+        this.calculateAll();
+    }
+
+    initializeEventListeners() {
+        // 全ての数値入力フィールドにイベントリスナーを設定
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', debounce(() => {
+                this.validateInput(input);
+                this.calculateAll();
+            }, 300));
+        });
+    }
+
+    validateInput(input) {
+        const value = input.value;
+        if (value < 0) input.value = 0;
+        if (value === '') input.value = 0;
+    }
+
+    calculateAll() {
+        try {
+            // 給与所得の計算
+            const salary = this.getInputValue('salary');
+            const employmentIncome = this.calculateEmploymentIncome(salary);
+            this.updateDisplay('employment-income-calc', employmentIncome);
+
+            // 事業所得の計算
+            const businessIncome = this.getInputValue('business-income');
+            const businessExpenses = this.getInputValue('business-expenses');
+            const businessProfit = Math.max(0, businessIncome - businessExpenses);
+            this.updateDisplay('business-profit-calc', businessProfit);
+
+            // 不動産所得の計算
+            const realEstateIncome = this.getInputValue('real-estate-income');
+            const realEstateExpenses = this.getInputValue('real-estate-expenses');
+            const realEstateProfit = Math.max(0, realEstateIncome - realEstateExpenses);
+            this.updateDisplay('real-estate-profit-calc', realEstateProfit);
+
+            // 雑所得の計算
+            const miscIncome = this.getInputValue('misc-income');
+            const miscExpenses = this.getInputValue('misc-expenses');
+            const miscProfit = Math.max(0, miscIncome - miscExpenses);
+            this.updateDisplay('misc-profit-calc', miscProfit);
+
+            // 総所得金額の計算と表示
+            const totalIncome = employmentIncome + businessProfit + realEstateProfit + miscProfit;
+            this.updateDisplay('total-income-calc', totalIncome);
+
+            // エラー表示をクリア
+            this.clearError();
+
+        } catch (error) {
+            console.error('計算エラー:', error);
+            this.displayError('計算中にエラーが発生しました。入力値を確認してください。');
+        }
+    }
+
+    getInputValue(id) {
+        return Number(document.getElementById(id).value) || 0;
+    }
+
+    updateDisplay(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value.toLocaleString();
+            this.highlightUpdate(element);
+        }
+    }
+
+    highlightUpdate(element) {
+        element.classList.add('updated');
+        setTimeout(() => element.classList.remove('updated'), 500);
+    }
+
+    displayError(message) {
+        const errorDiv = document.getElementById('calculation-error') || this.createErrorDiv();
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    clearError() {
+        const errorDiv = document.getElementById('calculation-error');
+        if (errorDiv) errorDiv.style.display = 'none';
+    }
+
+    createErrorDiv() {
+        const errorDiv = document.createElement('div');
+        errorDiv.id = 'calculation-error';
+        errorDiv.className = 'error-message';
+        document.querySelector('.form-container').prepend(errorDiv);
+        return errorDiv;
+    }
+}
+
+// debounce関数の実装
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 計算機のインスタンス化
+document.addEventListener('DOMContentLoaded', () => {
+    const calculator = new TaxCalculator();
+}); 

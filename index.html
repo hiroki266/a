@@ -8,160 +8,60 @@
 <body>
     <div class="container">
         <h1>所得税・復興特別所得税計算フォーム</h1>
-        <form id="taxForm">
-            <h2>収入</h2>
-            <div class="form-group">
-                <label for="salary">給与収入:</label>
-                <input type="number" id="salary" name="salary" min="0">
-            </div>
+        <div class="form-container">
+            <form id="taxForm" onsubmit="return false;">
+                <div class="income-section">
+                    <h2>収入・所得の計算</h2>
+                    
+                    <!-- 給与所得 -->
+                    <div class="form-group">
+                        <label for="salary">給与収入:</label>
+                        <input type="number" id="salary" min="0" step="1000">
+                        <span class="calculated-income">
+                            給与所得: <span id="employment-income-calc">0</span>円
+                        </span>
+                    </div>
 
-            <div class="income-section">
-                <h3>事業所得</h3>
-                <div class="form-group">
-                    <label for="business-income">事業収入:</label>
-                    <input type="number" id="business-income" name="business-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="business-expenses">事業必要経費:</label>
-                    <input type="number" id="business-expenses" name="business-expenses" min="0">
-                </div>
-                <div class="income-result">
-                    <p>事業所得: <span id="business-profit">0</span>円</p>
-                </div>
-            </div>
+                    <!-- 事業所得 -->
+                    <div class="form-group">
+                        <label for="business-income">事業収入:</label>
+                        <input type="number" id="business-income" min="0" step="1000">
+                        <label for="business-expenses">必要経費:</label>
+                        <input type="number" id="business-expenses" min="0" step="1000">
+                        <span class="calculated-income">
+                            事業所得: <span id="business-profit-calc">0</span>円
+                        </span>
+                    </div>
 
-            <div class="income-section">
-                <h3>不動産所得</h3>
-                <div class="form-group">
-                    <label for="real-estate-income">不動産収入:</label>
-                    <input type="number" id="real-estate-income" name="real-estate-income" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="real-estate-expenses">不動産必要経費:</label>
-                    <input type="number" id="real-estate-expenses" name="real-estate-expenses" min="0">
-                </div>
-                <div class="income-result">
-                    <p>不動産所得: <span id="real-estate-profit">0</span>円</p>
-                </div>
-            </div>
+                    <!-- 不動産所得 -->
+                    <div class="form-group">
+                        <label for="real-estate-income">不動産収入:</label>
+                        <input type="number" id="real-estate-income" min="0" step="1000">
+                        <label for="real-estate-expenses">必要経費:</label>
+                        <input type="number" id="real-estate-expenses" min="0" step="1000">
+                        <span class="calculated-income">
+                            不動産所得: <span id="real-estate-profit-calc">0</span>円
+                        </span>
+                    </div>
 
-            <div class="income-section">
-                <h3>雑所得</h3>
-                <div class="form-group">
-                    <label for="misc-income">雑収入:</label>
-                    <input type="number" id="misc-income" name="misc-income" min="0">
+                    <!-- その他の所得 -->
+                    <div class="form-group">
+                        <label for="misc-income">雑収入:</label>
+                        <input type="number" id="misc-income" min="0" step="1000">
+                        <label for="misc-expenses">必要経費:</label>
+                        <input type="number" id="misc-expenses" min="0" step="1000">
+                        <span class="calculated-income">
+                            雑所得: <span id="misc-profit-calc">0</span>円
+                        </span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="misc-expenses">雑所得必要経費:</label>
-                    <input type="number" id="misc-expenses" name="misc-expenses" min="0">
-                </div>
-                <div class="income-result">
-                    <p>雑所得: <span id="misc-profit">0</span>円</p>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label for="dividend-income">配当収入:</label>
-                <input type="number" id="dividend-income" name="dividend-income" min="0">
-            </div>
-            <div class="form-group">
-                <label for="transfer-income">譲渡収入:</label>
-                <input type="number" id="transfer-income" name="transfer-income" min="0">
-            </div>
-            <div class="form-group">
-                <label for="temporary-income">一時収入:</label>
-                <input type="number" id="temporary-income" name="temporary-income" min="0">
-            </div>
-
-            <h2>控除</h2>
-            <div class="form-group">
-                <label for="basic-deduction">基礎控除（48万円）:</label>
-                <input type="number" id="basic-deduction" value="480000" readonly>
-            </div>
-            
-            <h3>所得控除</h3>
-            <div class="form-group">
-                <label for="social-insurance">社会保険料控除:</label>
-                <input type="number" id="social-insurance" name="social-insurance" min="0">
-            </div>
-            <div class="form-group">
-                <label for="small-business">小規模企業共済等掛金控除:</label>
-                <input type="number" id="small-business" name="small-business" min="0">
-            </div>
-            <div class="insurance-section">
-                <h3>生命保険料控除</h3>
-                <div class="form-group">
-                    <label for="new-life-insurance">新一般生命保険料:</label>
-                    <input type="number" id="new-life-insurance" name="new-life-insurance" min="0">
+                <!-- 所得金額の合計表示 -->
+                <div class="total-income-display">
+                    <h3>総所得金額: <span id="total-income-calc">0</span>円</h3>
                 </div>
-                <div class="form-group">
-                    <label for="old-life-insurance">旧一般生命保険料:</label>
-                    <input type="number" id="old-life-insurance" name="old-life-insurance" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="new-pension-insurance">新個人年金保険料:</label>
-                    <input type="number" id="new-pension-insurance" name="new-pension-insurance" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="old-pension-insurance">旧個人年金保険料:</label>
-                    <input type="number" id="old-pension-insurance" name="old-pension-insurance" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="nursing-insurance">介護医療保険料:</label>
-                    <input type="number" id="nursing-insurance" name="nursing-insurance" min="0">
-                </div>
-                <div class="insurance-result">
-                    <p>生命保険料控除額: <span id="life-insurance-total">0</span>円</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="earthquake-insurance">地震保険料控除:</label>
-                <input type="number" id="earthquake-insurance" name="earthquake-insurance" min="0">
-            </div>
-            <div class="dependent-section">
-                <h3>扶養控除</h3>
-                <div id="dependent-list">
-                    <!-- 扶養家族の入力フォームがここに動的に追加されます -->
-                </div>
-                <button type="button" class="add-dependent-btn" onclick="addDependentForm()">扶養親族を追加</button>
-                <div class="dependent-result">
-                    <p>扶養控除額合計: <span id="dependent-total">0</span>円</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="widow-single-parent">寡婦・ひとり親控除:</label>
-                <select id="widow-single-parent" name="widow-single-parent">
-                    <option value="0">該当なし</option>
-                    <option value="270000">寡婦控除（27万円）</option>
-                    <option value="350000">ひとり親控除（35万円）</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="student-disability">勤労学生・障害者控除:</label>
-                <select id="student-disability" name="student-disability">
-                    <option value="0">該当なし</option>
-                    <option value="270000">勤労学生控除（27万円）</option>
-                    <option value="270000">障害者控除（27万円）</option>
-                    <option value="400000">特別障害者控除（40万円）</option>
-                </select>
-            </div>
-            
-            <h3>雑損控除・医療費控除・寄付金控除</h3>
-            <div class="form-group">
-                <label for="casualty-loss">雑損控除:</label>
-                <input type="number" id="casualty-loss" name="casualty-loss" min="0">
-            </div>
-            <div class="form-group">
-                <label for="medical">医療費控除:</label>
-                <input type="number" id="medical" name="medical" min="0">
-            </div>
-            <div class="form-group">
-                <label for="donation">寄付金控除:</label>
-                <input type="number" id="donation" name="donation" min="0">
-            </div>
-
-            <button type="button" onclick="calculateTax()">計算する</button>
-        </form>
+            </form>
+        </div>
 
         <div id="results" class="results">
             <h2>計算結果</h2>
