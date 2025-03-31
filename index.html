@@ -118,9 +118,15 @@
                 <label for="earthquake-insurance">地震保険料控除:</label>
                 <input type="number" id="earthquake-insurance" name="earthquake-insurance" min="0">
             </div>
-            <div class="form-group">
-                <label for="dependent">扶養控除:</label>
-                <input type="number" id="dependent" name="dependent" min="0">
+            <div class="dependent-section">
+                <h3>扶養控除</h3>
+                <div id="dependent-list">
+                    <!-- 扶養家族の入力フォームがここに動的に追加されます -->
+                </div>
+                <button type="button" class="add-dependent-btn" onclick="addDependentForm()">扶養親族を追加</button>
+                <div class="dependent-result">
+                    <p>扶養控除額合計: <span id="dependent-total">0</span>円</p>
+                </div>
             </div>
             <div class="form-group">
                 <label for="widow-single-parent">寡婦・ひとり親控除:</label>

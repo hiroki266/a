@@ -1,3 +1,88 @@
+// 扶養控除に関する定数
+const DEPENDENT_DEDUCTIONS = {
+    GENERAL: 380000,      // 一般扶養親族（16歳以上19歳未満、23歳以上70歳未満）
+    SPECIFIC: 630000,     // 特定扶養親族（19歳以上23歳未満）
+    ELDERLY_PARENTS: 580000,  // 老人扶養親族（70歳以上）で同居老親等以外
+    ELDERLY_PARENTS_LIVING_TOGETHER: 680000  // 老人扶養親族のうち同居老親等
+};
+
+let dependentCount = 0;
+
+// 扶養親族フォームを追加する関数
+function addDependentForm() {
+    const dependentList = document.getElementById('dependent-list');
+    const dependentDiv = document.createElement('div');
+    dependentDiv.className = 'dependent-form';
+    dependentDiv.id = `dependent-${dependentCount}`;
+
+    dependentDiv.innerHTML = `
+        <div class="form-group">
+            <label for="dependent-age-${dependentCount}">年齢:</label>
+            <input type="number" id="dependent-age-${dependentCount}" 
+                   min="0" max="120" class="dependent-age" 
+                   onchange="calculateDependentDeduction()">
+        </div>
+        <div class="form-group">
+            <label for="dependent-type-${dependentCount}">種類:</label>
+            <select id="dependent-type-${dependentCount}" 
+                    class="dependent-type" 
+                    onchange="calculateDependentDeduction()">
+                <option value="general">一般扶養親族</option>
+                <option value="elderly_living_together">同居老親等</option>
+                <option value="elderly_other">同居していない老親等</option>
+            </select>
+        </div>
+        <button type="button" class="remove-btn" 
+                onclick="removeDependent(${dependentCount})">削除</button>
+    `;
+
+    dependentList.appendChild(dependentDiv);
+    dependentCount++;
+    calculateDependentDeduction();
+}
+
+// 扶養親族フォームを削除する関数
+function removeDependent(id) {
+    const dependentDiv = document.getElementById(`dependent-${id}`);
+    dependentDiv.remove();
+    calculateDependentDeduction();
+}
+
+// 扶養控除額を計算する関数
+function calculateDependentDeduction() {
+    let totalDeduction = 0;
+    const dependentForms = document.getElementsByClassName('dependent-form');
+
+    Array.from(dependentForms).forEach(form => {
+        const age = Number(form.querySelector('.dependent-age').value);
+        const type = form.querySelector('.dependent-type').value;
+
+        if (age && age >= 16) { // 16歳未満は扶養控除の対象外
+            if (age >= 70) {
+                // 70歳以上の老人扶養親族
+                if (type === 'elderly_living_together') {
+                    totalDeduction += DEPENDENT_DEDUCTIONS.ELDERLY_PARENTS_LIVING_TOGETHER;
+                } else {
+                    totalDeduction += DEPENDENT_DEDUCTIONS.ELDERLY_PARENTS;
+                }
+            } else if (age >= 19 && age < 23) {
+                // 特定扶養親族（19歳以上23歳未満）
+                totalDeduction += DEPENDENT_DEDUCTIONS.SPECIFIC;
+            } else if ((age >= 16 && age < 19) || (age >= 23 && age < 70)) {
+                // 一般扶養親族
+                totalDeduction += DEPENDENT_DEDUCTIONS.GENERAL;
+            }
+        }
+    });
+
+    // 扶養控除額の表示を更新
+    document.getElementById('dependent-total').textContent = totalDeduction.toLocaleString();
+    
+    // メインの計算関数を呼び出して全体の計算を更新
+    calculateTax();
+    return totalDeduction;
+}
+
 function calculateTax() {
     // 収入と所得の計算
     const salary = Number(document.getElementById('salary').value) || 0;
@@ -48,7 +133,7 @@ function calculateTax() {
     const smallBusiness = Number(document.getElementById('small-business').value) || 0;
     const lifeInsurance = calculateLifeInsurance(); // 生命保険料控除の計算を更新
     const earthquakeInsurance = Number(document.getElementById('earthquake-insurance').value) || 0;
-    const dependent = Number(document.getElementById('dependent').value) || 0;
+    const dependentDeduction = calculateDependentDeduction();
     const widowSingleParent = Number(document.getElementById('widow-single-parent').value) || 0;
     const studentDisability = Number(document.getElementById('student-disability').value) || 0;
     const casualtyLoss = Number(document.getElementById('casualty-loss').value) || 0;
@@ -61,7 +146,7 @@ function calculateTax() {
                          smallBusiness + 
                          lifeInsurance + 
                          earthquakeInsurance + 
-                         dependent + 
+                         dependentDeduction + 
                          widowSingleParent + 
                          studentDisability + 
                          casualtyLoss + 
@@ -86,7 +171,7 @@ function calculateTax() {
     document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
     document.getElementById('life-insurance-display').textContent = lifeInsurance.toLocaleString();
     document.getElementById('earthquake-insurance-display').textContent = earthquakeInsurance.toLocaleString();
-    document.getElementById('dependent-display').textContent = dependent.toLocaleString();
+    document.getElementById('dependent-display').textContent = dependentDeduction.toLocaleString();
     document.getElementById('widow-single-parent-display').textContent = widowSingleParent.toLocaleString();
     document.getElementById('student-disability-display').textContent = studentDisability.toLocaleString();
     document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
