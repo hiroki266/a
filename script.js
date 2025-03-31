@@ -6,6 +6,16 @@ const DEPENDENT_DEDUCTIONS = {
     ELDERLY_PARENTS_LIVING_TOGETHER: 680000  // 老人扶養親族のうち同居老親等
 };
 
+// 基礎控除に関する定数を追加
+const BASIC_DEDUCTION = {
+    FULL_AMOUNT: 480000,      // 通常の基礎控除額（48万円）
+    REDUCED_2400: 320000,     // 所得2400万円超2450万円以下の場合（32万円）
+    REDUCED_2450: 160000,     // 所得2450万円超2500万円以下の場合（16万円）
+    LIMIT_2400: 24000000,     // 所得制限開始額（2400万円）
+    LIMIT_2450: 24500000,     // 第1段階の所得制限額（2450万円）
+    LIMIT_2500: 25000000      // 完全消失する所得制限額（2500万円）
+};
+
 let dependentCount = 0;
 
 // 扶養親族フォームを追加する関数
@@ -83,6 +93,20 @@ function calculateDependentDeduction() {
     return totalDeduction;
 }
 
+// 基礎控除額を計算する関数
+function calculateBasicDeduction(totalIncome) {
+    if (totalIncome <= BASIC_DEDUCTION.LIMIT_2400) {
+        return BASIC_DEDUCTION.FULL_AMOUNT;
+    } else if (totalIncome <= BASIC_DEDUCTION.LIMIT_2450) {
+        return BASIC_DEDUCTION.REDUCED_2400;
+    } else if (totalIncome <= BASIC_DEDUCTION.LIMIT_2500) {
+        return BASIC_DEDUCTION.REDUCED_2450;
+    } else {
+        return 0; // 所得2500万円超の場合
+    }
+}
+
+// メインの計算関数を更新
 function calculateTax() {
     // 収入と所得の計算
     const salary = Number(document.getElementById('salary').value) || 0;
@@ -117,6 +141,16 @@ function calculateTax() {
                        transferIncome + 
                        temporaryIncome;
 
+    // 基礎控除額の計算（所得制限を考慮）
+    const basicDeduction = calculateBasicDeduction(totalIncome);
+
+    // 基礎控除の表示を更新（所得制限の説明を追加）
+    const basicDeductionElement = document.getElementById('basic-deduction-display');
+    basicDeductionElement.textContent = basicDeduction.toLocaleString();
+    
+    // 基礎控除の説明を追加
+    updateBasicDeductionDescription(totalIncome);
+
     // 所得の内訳を表示
     document.getElementById('employment-income').textContent = employmentIncome.toLocaleString();
     document.getElementById('business-profit').textContent = businessProfit.toLocaleString();
@@ -128,7 +162,6 @@ function calculateTax() {
     document.getElementById('total-income').textContent = totalIncome.toLocaleString();
 
     // 控除の取得
-    const basicDeduction = 480000; // 基礎控除
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
     const smallBusiness = Number(document.getElementById('small-business').value) || 0;
     const lifeInsurance = calculateLifeInsurance(); // 生命保険料控除の計算を更新
@@ -166,7 +199,6 @@ function calculateTax() {
     const totalTax = incomeTax + specialTax;
 
     // 結果の表示を更新
-    document.getElementById('basic-deduction-display').textContent = basicDeduction.toLocaleString();
     document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
     document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
     document.getElementById('life-insurance-display').textContent = lifeInsurance.toLocaleString();
@@ -316,4 +348,30 @@ document.addEventListener('DOMContentLoaded', function() {
     inputIds.forEach(id => {
         document.getElementById(id).addEventListener('input', updateProfits);
     });
-}); 
+});
+
+// 基礎控除の説明を更新する関数
+function updateBasicDeductionDescription(totalIncome) {
+    const descriptionElement = document.getElementById('basic-deduction-description');
+    if (!descriptionElement) {
+        // 説明表示用の要素がない場合は作成
+        const deductionDisplay = document.getElementById('basic-deduction-display').parentElement;
+        const description = document.createElement('p');
+        description.id = 'basic-deduction-description';
+        description.className = 'deduction-description';
+        deductionDisplay.appendChild(description);
+    }
+
+    let message = '';
+    if (totalIncome <= BASIC_DEDUCTION.LIMIT_2400) {
+        message = '（所得2400万円以下：48万円）';
+    } else if (totalIncome <= BASIC_DEDUCTION.LIMIT_2450) {
+        message = '（所得2400万円超2450万円以下：32万円）';
+    } else if (totalIncome <= BASIC_DEDUCTION.LIMIT_2500) {
+        message = '（所得2450万円超2500万円以下：16万円）';
+    } else {
+        message = '（所得2500万円超：適用なし）';
+    }
+    
+    document.getElementById('basic-deduction-description').textContent = message;
+} 
