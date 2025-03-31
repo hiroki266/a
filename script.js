@@ -138,8 +138,8 @@ function calculateTax() {
                        realEstateProfit + 
                        miscProfit + 
                        dividendIncome + 
-                       transferIncome + 
-                       temporaryIncome;
+                       (transferIncome / 2) + // 譲渡所得は2分の1
+                       (temporaryIncome / 2);  // 一時所得は2分の1
 
     // 基礎控除額の計算（所得制限を考慮）
     const basicDeduction = calculateBasicDeduction(totalIncome);
@@ -161,30 +161,54 @@ function calculateTax() {
     document.getElementById('temporary-income-display').textContent = temporaryIncome.toLocaleString();
     document.getElementById('total-income').textContent = totalIncome.toLocaleString();
 
-    // 控除の取得
+    // 控除の取得と計算
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
     const smallBusiness = Number(document.getElementById('small-business').value) || 0;
-    const lifeInsurance = calculateLifeInsurance(); // 生命保険料控除の計算を更新
-    const earthquakeInsurance = Number(document.getElementById('earthquake-insurance').value) || 0;
+    const lifeInsurance = calculateLifeInsurance();
+    
+    // 地震保険料控除（上限適用）
+    const earthquakeInsuranceInput = Number(document.getElementById('earthquake-insurance').value) || 0;
+    const earthquakeInsurance = calculateEarthquakeInsurance(earthquakeInsuranceInput);
+    
     const dependentDeduction = calculateDependentDeduction();
     const widowSingleParent = Number(document.getElementById('widow-single-parent').value) || 0;
     const studentDisability = Number(document.getElementById('student-disability').value) || 0;
     const casualtyLoss = Number(document.getElementById('casualty-loss').value) || 0;
-    const medical = Number(document.getElementById('medical').value) || 0;
-    const donation = Number(document.getElementById('donation').value) || 0;
+    
+    // 医療費控除（要件と上限を考慮）
+    const medicalExpenses = Number(document.getElementById('medical').value) || 0;
+    const medical = calculateMedicalDeduction(medicalExpenses, totalIncome);
+    
+    // 寄附金控除（要件と上限を考慮）
+    const donationAmount = Number(document.getElementById('donation').value) || 0;
+    const donation = calculateDonationDeduction(donationAmount, totalIncome);
 
     // 控除総額の計算
     const totalDeduction = basicDeduction + 
-                         socialInsurance + 
-                         smallBusiness + 
-                         lifeInsurance + 
-                         earthquakeInsurance + 
-                         dependentDeduction + 
-                         widowSingleParent + 
-                         studentDisability + 
-                         casualtyLoss + 
-                         medical + 
-                         donation;
+                          socialInsurance + 
+                          smallBusiness + 
+                          lifeInsurance + 
+                          earthquakeInsurance + 
+                          dependentDeduction + 
+                          widowSingleParent + 
+                          studentDisability + 
+                          casualtyLoss + 
+                          medical + 
+                          donation;
+
+    // 控除額の表示を更新
+    document.getElementById('basic-deduction-display').textContent = basicDeduction.toLocaleString();
+    document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
+    document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
+    document.getElementById('life-insurance-total').textContent = lifeInsurance.toLocaleString();
+    document.getElementById('earthquake-insurance-display').textContent = earthquakeInsurance.toLocaleString();
+    document.getElementById('dependent-total').textContent = dependentDeduction.toLocaleString();
+    document.getElementById('widow-single-parent-display').textContent = widowSingleParent.toLocaleString();
+    document.getElementById('student-disability-display').textContent = studentDisability.toLocaleString();
+    document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
+    document.getElementById('medical-display').textContent = medical.toLocaleString();
+    document.getElementById('donation-display').textContent = donation.toLocaleString();
+    document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
 
     // 課税所得金額の計算
     const taxableIncome = Math.max(0, totalIncome - totalDeduction);
@@ -199,17 +223,6 @@ function calculateTax() {
     const totalTax = incomeTax + specialTax;
 
     // 結果の表示を更新
-    document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
-    document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
-    document.getElementById('life-insurance-display').textContent = lifeInsurance.toLocaleString();
-    document.getElementById('earthquake-insurance-display').textContent = earthquakeInsurance.toLocaleString();
-    document.getElementById('dependent-display').textContent = dependentDeduction.toLocaleString();
-    document.getElementById('widow-single-parent-display').textContent = widowSingleParent.toLocaleString();
-    document.getElementById('student-disability-display').textContent = studentDisability.toLocaleString();
-    document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
-    document.getElementById('medical-display').textContent = medical.toLocaleString();
-    document.getElementById('donation-display').textContent = donation.toLocaleString();
-    document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
     document.getElementById('taxable-income').textContent = taxableIncome.toLocaleString();
     document.getElementById('income-tax').textContent = incomeTax.toLocaleString();
     document.getElementById('special-tax').textContent = specialTax.toLocaleString();
@@ -374,4 +387,27 @@ function updateBasicDeductionDescription(totalIncome) {
     }
     
     document.getElementById('basic-deduction-description').textContent = message;
+}
+
+function calculateEarthquakeInsurance(amount) {
+    // 地震保険料控除の上限は50,000円
+    return Math.min(50000, amount);
+}
+
+function calculateMedicalDeduction(medicalExpenses, totalIncome) {
+    // 医療費控除の計算
+    // 支払医療費から総所得金額の5%または10万円の多い方を差し引く
+    const minimumExpenses = Math.max(totalIncome * 0.05, 100000);
+    const deduction = Math.max(0, medicalExpenses - minimumExpenses);
+    // 上限額は200万円
+    return Math.min(2000000, deduction);
+}
+
+function calculateDonationDeduction(donation, totalIncome) {
+    // 寄附金控除の計算
+    // 総所得金額の40%が上限
+    const maxDeduction = totalIncome * 0.4;
+    // 寄附金から2,000円を引いた額
+    const deductibleAmount = Math.max(0, donation - 2000);
+    return Math.min(maxDeduction, deductibleAmount);
 } 
