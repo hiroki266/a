@@ -164,7 +164,7 @@ function calculateTax() {
     // 控除の取得と計算
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
     const smallBusiness = Number(document.getElementById('small-business').value) || 0;
-    const lifeInsurance = calculateLifeInsurance();
+    const lifeInsurance = updateLifeInsuranceDisplay();
     
     // 地震保険料控除（上限適用）
     const earthquakeInsuranceInput = Number(document.getElementById('earthquake-insurance').value) || 0;
@@ -177,11 +177,11 @@ function calculateTax() {
     
     // 医療費控除（要件と上限を考慮）
     const medicalExpenses = Number(document.getElementById('medical').value) || 0;
-    const medical = calculateMedicalDeduction(medicalExpenses, totalIncome);
+    const medical = updateMedicalDeductionDisplay(medicalExpenses, totalIncome);
     
     // 寄附金控除（要件と上限を考慮）
     const donationAmount = Number(document.getElementById('donation').value) || 0;
-    const donation = calculateDonationDeduction(donationAmount, totalIncome);
+    const donation = updateDonationDeductionDisplay(donationAmount, totalIncome);
 
     // 控除総額の計算
     const totalDeduction = basicDeduction + 
@@ -270,31 +270,63 @@ function calculateEmploymentIncome(salary) {
     return Math.max(0, salary - deduction);
 }
 
-// 生命保険料控除を計算する関数
-function calculateLifeInsurance() {
-    // 各保険料の取得
+// 生命保険料控除の計算と表示を更新
+function updateLifeInsuranceDisplay() {
     const newLifeInsurance = Number(document.getElementById('new-life-insurance').value) || 0;
     const oldLifeInsurance = Number(document.getElementById('old-life-insurance').value) || 0;
     const newPensionInsurance = Number(document.getElementById('new-pension-insurance').value) || 0;
     const oldPensionInsurance = Number(document.getElementById('old-pension-insurance').value) || 0;
     const nursingInsurance = Number(document.getElementById('nursing-insurance').value) || 0;
 
-    // 一般生命保険料控除額の計算（新旧合計）
-    const lifeInsuranceDeduction = calculateInsuranceDeduction(newLifeInsurance, oldLifeInsurance);
-
-    // 個人年金保険料控除額の計算（新旧合計）
-    const pensionInsuranceDeduction = calculateInsuranceDeduction(newPensionInsurance, oldPensionInsurance);
-
-    // 介護医療保険料控除額の計算
-    const nursingInsuranceDeduction = calculateSingleInsuranceDeduction(nursingInsurance);
+    // 各種類ごとの控除額を計算
+    const lifeDeduction = calculateInsuranceDeduction(newLifeInsurance, oldLifeInsurance);
+    const pensionDeduction = calculateInsuranceDeduction(newPensionInsurance, oldPensionInsurance);
+    const nursingDeduction = calculateSingleInsuranceDeduction(nursingInsurance);
 
     // 合計控除額（上限12万円）
-    const totalDeduction = Math.min(120000, lifeInsuranceDeduction + pensionInsuranceDeduction + nursingInsuranceDeduction);
+    const totalDeduction = Math.min(120000, lifeDeduction + pensionDeduction + nursingDeduction);
 
-    // 結果を表示
-    document.getElementById('life-insurance-total').textContent = totalDeduction.toLocaleString();
+    // 内訳の表示を更新
+    document.getElementById('life-insurance-breakdown').innerHTML = `
+        <p>一般生命保険料控除: ${lifeDeduction.toLocaleString()}円</p>
+        <p>個人年金保険料控除: ${pensionDeduction.toLocaleString()}円</p>
+        <p>介護医療保険料控除: ${nursingDeduction.toLocaleString()}円</p>
+        <p class="insurance-total">合計: ${totalDeduction.toLocaleString()}円</p>
+    `;
 
     return totalDeduction;
+}
+
+// 医療費控除の計算と表示を更新
+function updateMedicalDeductionDisplay(medicalExpenses, totalIncome) {
+    const minimumExpenses = Math.max(totalIncome * 0.05, 100000);
+    const deduction = Math.max(0, medicalExpenses - minimumExpenses);
+    const finalDeduction = Math.min(2000000, deduction);
+
+    document.getElementById('medical-breakdown').innerHTML = `
+        <p>支払医療費: ${medicalExpenses.toLocaleString()}円</p>
+        <p>差引額（${Math.floor(totalIncome * 0.05).toLocaleString()}円または10万円の多い方）: ${minimumExpenses.toLocaleString()}円</p>
+        <p>控除額: ${finalDeduction.toLocaleString()}円</p>
+    `;
+
+    return finalDeduction;
+}
+
+// 寄付金控除の計算と表示を更新
+function updateDonationDeductionDisplay(donation, totalIncome) {
+    const maxDeduction = totalIncome * 0.4;
+    const deductibleAmount = Math.max(0, donation - 2000);
+    const finalDeduction = Math.min(maxDeduction, deductibleAmount);
+
+    document.getElementById('donation-breakdown').innerHTML = `
+        <p>寄付金額: ${donation.toLocaleString()}円</p>
+        <p>基礎控除額: 2,000円</p>
+        <p>控除対象額: ${deductibleAmount.toLocaleString()}円</p>
+        <p>所得制限による上限額: ${maxDeduction.toLocaleString()}円</p>
+        <p>控除額: ${finalDeduction.toLocaleString()}円</p>
+    `;
+
+    return finalDeduction;
 }
 
 // 新旧の保険料控除を計算する関数
@@ -392,22 +424,4 @@ function updateBasicDeductionDescription(totalIncome) {
 function calculateEarthquakeInsurance(amount) {
     // 地震保険料控除の上限は50,000円
     return Math.min(50000, amount);
-}
-
-function calculateMedicalDeduction(medicalExpenses, totalIncome) {
-    // 医療費控除の計算
-    // 支払医療費から総所得金額の5%または10万円の多い方を差し引く
-    const minimumExpenses = Math.max(totalIncome * 0.05, 100000);
-    const deduction = Math.max(0, medicalExpenses - minimumExpenses);
-    // 上限額は200万円
-    return Math.min(2000000, deduction);
-}
-
-function calculateDonationDeduction(donation, totalIncome) {
-    // 寄附金控除の計算
-    // 総所得金額の40%が上限
-    const maxDeduction = totalIncome * 0.4;
-    // 寄附金から2,000円を引いた額
-    const deductibleAmount = Math.max(0, donation - 2000);
-    return Math.min(maxDeduction, deductibleAmount);
 } 
