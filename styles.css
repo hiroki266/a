@@ -257,4 +257,67 @@ h3 {
     padding-top: 8px;
     border-top: 1px solid #ddd;
     font-weight: bold;
+}
+
+.insurance-breakdown {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.insurance-type {
+    margin: 10px 0;
+    padding-left: 15px;
+    border-left: 3px solid #4CAF50;
+}
+
+.insurance-detail {
+    margin-left: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.insurance-total {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+    font-weight: bold;
+    color: #2c5282;
+}
+
+.deduction-section h4 {
+    color: #2c5282;
+    margin-bottom: 10px;
+}
+
+.calculation-breakdown {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.calculation-section {
+    margin: 15px 0;
+    padding-left: 15px;
+    border-left: 3px solid #4CAF50;
+}
+
+.calculation-section h4 {
+    color: #2c5282;
+    margin-bottom: 10px;
+}
+
+.calculation-detail {
+    margin-left: 20px;
+    font-size: 0.9em;
+}
+
+.calculation-detail .total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+    font-weight: bold;
+    color: #2c5282;
 } 

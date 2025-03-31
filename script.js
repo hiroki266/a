@@ -108,7 +108,8 @@ function calculateBasicDeduction(totalIncome) {
 
 // メインの計算関数を更新
 function calculateTax() {
-    // 収入と所得の計算
+    // 1. 各種所得の計算
+    // 給与所得の計算
     const salary = Number(document.getElementById('salary').value) || 0;
     const employmentIncome = calculateEmploymentIncome(salary);
 
@@ -127,63 +128,42 @@ function calculateTax() {
     const miscExpenses = Number(document.getElementById('misc-expenses').value) || 0;
     const miscProfit = Math.max(0, miscIncome - miscExpenses);
 
-    // その他の収入
+    // その他の所得
     const dividendIncome = Number(document.getElementById('dividend-income').value) || 0;
     const transferIncome = Number(document.getElementById('transfer-income').value) || 0;
     const temporaryIncome = Number(document.getElementById('temporary-income').value) || 0;
 
-    // 総所得金額の計算
+    // 2. 総所得金額の計算（譲渡所得と一時所得は2分の1課税）
     const totalIncome = employmentIncome + 
                        businessProfit + 
                        realEstateProfit + 
                        miscProfit + 
                        dividendIncome + 
-                       (transferIncome / 2) + // 譲渡所得は2分の1
-                       (temporaryIncome / 2);  // 一時所得は2分の1
+                       (transferIncome / 2) + 
+                       (temporaryIncome / 2);
 
-    // 基礎控除額の計算（所得制限を考慮）
+    // 3. 所得控除の計算
     const basicDeduction = calculateBasicDeduction(totalIncome);
-
-    // 基礎控除の表示を更新（所得制限の説明を追加）
-    const basicDeductionElement = document.getElementById('basic-deduction-display');
-    basicDeductionElement.textContent = basicDeduction.toLocaleString();
-    
-    // 基礎控除の説明を追加
-    updateBasicDeductionDescription(totalIncome);
-
-    // 所得の内訳を表示
-    document.getElementById('employment-income').textContent = employmentIncome.toLocaleString();
-    document.getElementById('business-profit').textContent = businessProfit.toLocaleString();
-    document.getElementById('real-estate-profit').textContent = realEstateProfit.toLocaleString();
-    document.getElementById('misc-profit').textContent = miscProfit.toLocaleString();
-    document.getElementById('dividend-income-display').textContent = dividendIncome.toLocaleString();
-    document.getElementById('transfer-income-display').textContent = transferIncome.toLocaleString();
-    document.getElementById('temporary-income-display').textContent = temporaryIncome.toLocaleString();
-    document.getElementById('total-income').textContent = totalIncome.toLocaleString();
-
-    // 控除の取得と計算
     const socialInsurance = Number(document.getElementById('social-insurance').value) || 0;
     const smallBusiness = Number(document.getElementById('small-business').value) || 0;
-    const lifeInsurance = updateLifeInsuranceDisplay();
-    
-    // 地震保険料控除（上限適用）
-    const earthquakeInsuranceInput = Number(document.getElementById('earthquake-insurance').value) || 0;
-    const earthquakeInsurance = calculateEarthquakeInsurance(earthquakeInsuranceInput);
-    
+    const lifeInsurance = calculateLifeInsurance();
+    const earthquakeInsurance = calculateEarthquakeInsurance(
+        Number(document.getElementById('earthquake-insurance').value) || 0
+    );
     const dependentDeduction = calculateDependentDeduction();
     const widowSingleParent = Number(document.getElementById('widow-single-parent').value) || 0;
     const studentDisability = Number(document.getElementById('student-disability').value) || 0;
     const casualtyLoss = Number(document.getElementById('casualty-loss').value) || 0;
-    
-    // 医療費控除（要件と上限を考慮）
-    const medicalExpenses = Number(document.getElementById('medical').value) || 0;
-    const medical = updateMedicalDeductionDisplay(medicalExpenses, totalIncome);
-    
-    // 寄附金控除（要件と上限を考慮）
-    const donationAmount = Number(document.getElementById('donation').value) || 0;
-    const donation = updateDonationDeductionDisplay(donationAmount, totalIncome);
+    const medical = calculateMedicalDeduction(
+        Number(document.getElementById('medical').value) || 0,
+        totalIncome
+    );
+    const donation = calculateDonationDeduction(
+        Number(document.getElementById('donation').value) || 0,
+        totalIncome
+    );
 
-    // 控除総額の計算
+    // 4. 控除総額の計算
     const totalDeduction = basicDeduction + 
                           socialInsurance + 
                           smallBusiness + 
@@ -196,37 +176,56 @@ function calculateTax() {
                           medical + 
                           donation;
 
-    // 控除額の表示を更新
-    document.getElementById('basic-deduction-display').textContent = basicDeduction.toLocaleString();
-    document.getElementById('social-insurance-display').textContent = socialInsurance.toLocaleString();
-    document.getElementById('small-business-display').textContent = smallBusiness.toLocaleString();
-    document.getElementById('life-insurance-total').textContent = lifeInsurance.toLocaleString();
-    document.getElementById('earthquake-insurance-display').textContent = earthquakeInsurance.toLocaleString();
-    document.getElementById('dependent-total').textContent = dependentDeduction.toLocaleString();
-    document.getElementById('widow-single-parent-display').textContent = widowSingleParent.toLocaleString();
-    document.getElementById('student-disability-display').textContent = studentDisability.toLocaleString();
-    document.getElementById('casualty-loss-display').textContent = casualtyLoss.toLocaleString();
-    document.getElementById('medical-display').textContent = medical.toLocaleString();
-    document.getElementById('donation-display').textContent = donation.toLocaleString();
-    document.getElementById('total-deduction').textContent = totalDeduction.toLocaleString();
+    // 5. 課税所得金額の計算（1000円未満切り捨て）
+    const taxableIncome = Math.floor((Math.max(0, totalIncome - totalDeduction)) / 1000) * 1000;
 
-    // 課税所得金額の計算
-    const taxableIncome = Math.max(0, totalIncome - totalDeduction);
+    // 6. 計算過程の表示
+    displayTaxableIncomeCalculation({
+        totalIncome,
+        totalDeduction,
+        taxableIncome,
+        incomeBreakdown: {
+            employmentIncome,
+            businessProfit,
+            realEstateProfit,
+            miscProfit,
+            dividendIncome,
+            transferIncome,
+            temporaryIncome
+        }
+    });
 
-    // 所得税額の計算（累進課税）
-    let incomeTax = calculateIncomeTax(taxableIncome);
+    return taxableIncome;
+}
 
-    // 復興特別所得税の計算（所得税額の2.1%）
-    const specialTax = Math.floor(incomeTax * 0.021);
-
-    // 合計税額
-    const totalTax = incomeTax + specialTax;
-
-    // 結果の表示を更新
-    document.getElementById('taxable-income').textContent = taxableIncome.toLocaleString();
-    document.getElementById('income-tax').textContent = incomeTax.toLocaleString();
-    document.getElementById('special-tax').textContent = specialTax.toLocaleString();
-    document.getElementById('total-tax').textContent = totalTax.toLocaleString();
+// 課税所得金額の計算過程を表示する関数
+function displayTaxableIncomeCalculation(data) {
+    const taxableIncomeBreakdown = document.getElementById('taxable-income-breakdown');
+    
+    taxableIncomeBreakdown.innerHTML = `
+        <div class="calculation-section">
+            <h4>所得金額の内訳</h4>
+            <div class="calculation-detail">
+                <p>給与所得: ${data.incomeBreakdown.employmentIncome.toLocaleString()}円</p>
+                <p>事業所得: ${data.incomeBreakdown.businessProfit.toLocaleString()}円</p>
+                <p>不動産所得: ${data.incomeBreakdown.realEstateProfit.toLocaleString()}円</p>
+                <p>雑所得: ${data.incomeBreakdown.miscProfit.toLocaleString()}円</p>
+                <p>配当所得: ${data.incomeBreakdown.dividendIncome.toLocaleString()}円</p>
+                <p>譲渡所得（2分の1課税後）: ${(data.incomeBreakdown.transferIncome / 2).toLocaleString()}円</p>
+                <p>一時所得（2分の1課税後）: ${(data.incomeBreakdown.temporaryIncome / 2).toLocaleString()}円</p>
+                <p class="total">総所得金額: ${data.totalIncome.toLocaleString()}円</p>
+            </div>
+        </div>
+        <div class="calculation-section">
+            <h4>課税所得金額の計算</h4>
+            <div class="calculation-detail">
+                <p>総所得金額: ${data.totalIncome.toLocaleString()}円</p>
+                <p>控除総額: ${data.totalDeduction.toLocaleString()}円</p>
+                <p>差引金額: ${(data.totalIncome - data.totalDeduction).toLocaleString()}円</p>
+                <p class="total">課税所得金額（1000円未満切捨）: ${data.taxableIncome.toLocaleString()}円</p>
+            </div>
+        </div>
+    `;
 }
 
 function calculateIncomeTax(taxableIncome) {
@@ -271,34 +270,63 @@ function calculateEmploymentIncome(salary) {
 }
 
 // 生命保険料控除の計算と表示を更新
-function updateLifeInsuranceDisplay() {
+function calculateLifeInsurance() {
+    // 保険料の取得
     const newLifeInsurance = Number(document.getElementById('new-life-insurance').value) || 0;
     const oldLifeInsurance = Number(document.getElementById('old-life-insurance').value) || 0;
     const newPensionInsurance = Number(document.getElementById('new-pension-insurance').value) || 0;
     const oldPensionInsurance = Number(document.getElementById('old-pension-insurance').value) || 0;
     const nursingInsurance = Number(document.getElementById('nursing-insurance').value) || 0;
 
-    // 各種類ごとの控除額を計算
-    const lifeDeduction = calculateInsuranceDeduction(newLifeInsurance, oldLifeInsurance);
-    const pensionDeduction = calculateInsuranceDeduction(newPensionInsurance, oldPensionInsurance);
-    const nursingDeduction = calculateSingleInsuranceDeduction(nursingInsurance);
+    // 一般生命保険料控除額の計算
+    const lifeInsuranceDeduction = calculateInsuranceDeduction(newLifeInsurance, oldLifeInsurance);
+
+    // 個人年金保険料控除額の計算
+    const pensionInsuranceDeduction = calculateInsuranceDeduction(newPensionInsurance, oldPensionInsurance);
+
+    // 介護医療保険料控除額の計算
+    const nursingInsuranceDeduction = calculateSingleInsuranceDeduction(nursingInsurance);
 
     // 合計控除額（上限12万円）
-    const totalDeduction = Math.min(120000, lifeDeduction + pensionDeduction + nursingDeduction);
+    const totalDeduction = Math.min(120000, lifeInsuranceDeduction + pensionInsuranceDeduction + nursingInsuranceDeduction);
 
-    // 内訳の表示を更新
-    document.getElementById('life-insurance-breakdown').innerHTML = `
-        <p>一般生命保険料控除: ${lifeDeduction.toLocaleString()}円</p>
-        <p>個人年金保険料控除: ${pensionDeduction.toLocaleString()}円</p>
-        <p>介護医療保険料控除: ${nursingDeduction.toLocaleString()}円</p>
-        <p class="insurance-total">合計: ${totalDeduction.toLocaleString()}円</p>
-    `;
+    // 表示の更新
+    updateInsuranceDisplay({
+        newLife: newLifeInsurance,
+        oldLife: oldLifeInsurance,
+        newPension: newPensionInsurance,
+        oldPension: oldPensionInsurance,
+        nursing: nursingInsurance,
+        lifeDeduction: lifeInsuranceDeduction,
+        pensionDeduction: pensionInsuranceDeduction,
+        nursingDeduction: nursingInsuranceDeduction,
+        total: totalDeduction
+    });
 
     return totalDeduction;
 }
 
+function updateInsuranceDisplay(values) {
+    // 一般生命保険料の表示更新
+    document.getElementById('new-life-insurance-display').textContent = values.newLife.toLocaleString();
+    document.getElementById('old-life-insurance-display').textContent = values.oldLife.toLocaleString();
+    document.getElementById('life-insurance-deduction').textContent = values.lifeDeduction.toLocaleString();
+
+    // 個人年金保険料の表示更新
+    document.getElementById('new-pension-insurance-display').textContent = values.newPension.toLocaleString();
+    document.getElementById('old-pension-insurance-display').textContent = values.oldPension.toLocaleString();
+    document.getElementById('pension-insurance-deduction').textContent = values.pensionDeduction.toLocaleString();
+
+    // 介護医療保険料の表示更新
+    document.getElementById('nursing-insurance-display').textContent = values.nursing.toLocaleString();
+    document.getElementById('nursing-insurance-deduction').textContent = values.nursingDeduction.toLocaleString();
+
+    // 合計額の表示更新
+    document.getElementById('life-insurance-total').textContent = values.total.toLocaleString();
+}
+
 // 医療費控除の計算と表示を更新
-function updateMedicalDeductionDisplay(medicalExpenses, totalIncome) {
+function calculateMedicalDeduction(medicalExpenses, totalIncome) {
     const minimumExpenses = Math.max(totalIncome * 0.05, 100000);
     const deduction = Math.max(0, medicalExpenses - minimumExpenses);
     const finalDeduction = Math.min(2000000, deduction);
@@ -313,7 +341,7 @@ function updateMedicalDeductionDisplay(medicalExpenses, totalIncome) {
 }
 
 // 寄付金控除の計算と表示を更新
-function updateDonationDeductionDisplay(donation, totalIncome) {
+function calculateDonationDeduction(donation, totalIncome) {
     const maxDeduction = totalIncome * 0.4;
     const deductibleAmount = Math.max(0, donation - 2000);
     const finalDeduction = Math.min(maxDeduction, deductibleAmount);

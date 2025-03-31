@@ -188,8 +188,35 @@
                 <p>社会保険料控除: <span id="social-insurance-display">0</span>円</p>
                 <p>小規模企業共済等掛金控除: <span id="small-business-display">0</span>円</p>
                 <div class="deduction-section">
-                    <p>生命保険料控除: <span id="life-insurance-total">0</span>円</p>
-                    <div id="life-insurance-breakdown" class="deduction-detail"></div>
+                    <h4>生命保険料控除</h4>
+                    <div class="insurance-breakdown">
+                        <div class="insurance-type">
+                            <p>一般生命保険料:</p>
+                            <div class="insurance-detail">
+                                <p>新契約: <span id="new-life-insurance-display">0</span>円</p>
+                                <p>旧契約: <span id="old-life-insurance-display">0</span>円</p>
+                                <p>控除額: <span id="life-insurance-deduction">0</span>円</p>
+                            </div>
+                        </div>
+                        <div class="insurance-type">
+                            <p>個人年金保険料:</p>
+                            <div class="insurance-detail">
+                                <p>新契約: <span id="new-pension-insurance-display">0</span>円</p>
+                                <p>旧契約: <span id="old-pension-insurance-display">0</span>円</p>
+                                <p>控除額: <span id="pension-insurance-deduction">0</span>円</p>
+                            </div>
+                        </div>
+                        <div class="insurance-type">
+                            <p>介護医療保険料:</p>
+                            <div class="insurance-detail">
+                                <p>支払保険料: <span id="nursing-insurance-display">0</span>円</p>
+                                <p>控除額: <span id="nursing-insurance-deduction">0</span>円</p>
+                            </div>
+                        </div>
+                        <div class="insurance-total">
+                            <p>生命保険料控除合計: <span id="life-insurance-total">0</span>円</p>
+                        </div>
+                    </div>
                 </div>
                 <p>地震保険料控除: <span id="earthquake-insurance-display">0</span>円</p>
                 <p>扶養控除: <span id="dependent-display">0</span>円</p>
@@ -217,6 +244,8 @@
                 <p>復興特別所得税額: <span id="special-tax">0</span>円</p>
                 <p class="total-tax">合計税額: <span id="total-tax">0</span>円</p>
             </div>
+
+            <div id="taxable-income-breakdown" class="calculation-breakdown"></div>
         </div>
     </div>
     <script src="script.js"></script>
